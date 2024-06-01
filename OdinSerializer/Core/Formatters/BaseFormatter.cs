@@ -450,14 +450,20 @@ namespace OdinSerializer
         public WeakBaseFormatter(Type serializedType)
         {
             this.SerializedType = serializedType;
+#if !DISABLE_UNITY
             this.ImplementsISerializationCallbackReceiver = this.SerializedType.ImplementsOrInherits(typeof(UnityEngine.ISerializationCallbackReceiver));
-            this.ImplementsIDeserializationCallback = this.SerializedType.ImplementsOrInherits(typeof(IDeserializationCallback));
-            this.ImplementsIObjectReference = this.SerializedType.ImplementsOrInherits(typeof(IObjectReference));
-
             if (this.SerializedType.ImplementsOrInherits(typeof(UnityEngine.Object)))
             {
                 DefaultLoggers.DefaultLogger.LogWarning("A formatter has been created for the UnityEngine.Object type " + this.SerializedType.Name + " - this is *strongly* discouraged. Unity should be allowed to handle serialization and deserialization of its own weird objects. Remember to serialize with a UnityReferenceResolver as the external index reference resolver in the serialization context.\n\n Stacktrace: " + new System.Diagnostics.StackTrace().ToString());
             }
+#else
+            this.ImplementsISerializationCallbackReceiver = false;
+#endif
+
+            this.ImplementsIDeserializationCallback = this.SerializedType.ImplementsOrInherits(typeof(IDeserializationCallback));
+            this.ImplementsIObjectReference = this.SerializedType.ImplementsOrInherits(typeof(IObjectReference));
+
+            
 
             MethodInfo[] methods = this.SerializedType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -535,7 +541,7 @@ namespace OdinSerializer
                     context.Config.DebugContext.LogException(ex);
                 }
             }
-
+#if !DISABLE_UNITY
             if (ImplementsISerializationCallbackReceiver)
             {
                 try
@@ -550,7 +556,7 @@ namespace OdinSerializer
                     context.Config.DebugContext.LogException(ex);
                 }
             }
-
+#endif
             try
             {
                 this.SerializeImplementation(ref value, writer);
@@ -650,7 +656,7 @@ namespace OdinSerializer
                     v.OnDeserialization(this);
                     value = v;
                 }
-
+#if !DISABLE_UNITY
                 if (ImplementsISerializationCallbackReceiver)
                 {
                     try
@@ -664,6 +670,7 @@ namespace OdinSerializer
                         context.Config.DebugContext.LogException(ex);
                     }
                 }
+#endif
             }
 
             return value;

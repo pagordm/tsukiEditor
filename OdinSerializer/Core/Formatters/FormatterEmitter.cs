@@ -476,7 +476,7 @@ namespace OdinSerializer
             //methodBuilder.DefineParameter(5, ParameterAttributes.None, "switchLookup");
 
             LocalBuilder lookupResult = gen.DeclareLocal(typeof(int));
-
+            Logging.Log(dictField.Name);
             Label defaultLabel = gen.DefineLabel();
             Label switchLabel = gen.DefineLabel();
             Label endLabel = gen.DefineLabel();

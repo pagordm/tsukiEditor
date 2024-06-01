@@ -93,12 +93,15 @@ namespace OdinSerializer.Utilities
 #if UNITY_EDITOR
         private static Assembly EditorAssembly = typeof(UnityEditor.Editor).Assembly;
 #endif
+#if !DISABLE_UNITY
         private static Assembly EngineAssembly = typeof(UnityEngine.Object).Assembly;
-
+#endif
         private static bool EmitIsIllegalForMember(MemberInfo member)
         {
 #if UNITY_EDITOR
             return member.DeclaringType != null && (member.DeclaringType.Assembly == EditorAssembly || member.DeclaringType.Assembly == EngineAssembly);
+#elif DISABLE_UNITY
+            return true;
 #else
             return member.DeclaringType != null && member.DeclaringType.Assembly == EngineAssembly;
 #endif
