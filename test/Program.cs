@@ -10,26 +10,12 @@ namespace test
 {
     internal class Program
     {
-        [Serializable]
-        public class Person
-        {
-            [OdinSerialize]
-            public Int32 language;
-            [OdinSerialize]
-            public Int32 cloudSaveID;
-        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-
-            //Person data = new Person { Age=18, Name="Pepe"};
-            //byte[] bytes = SerializationUtility.SerializeValue(data, DataFormat.Binary);
-
-            //Console.WriteLine(BitConverter.ToString(bytes));
-
             TsukiSave save = SerializationUtility.DeserializeValue<TsukiSave>(File.ReadAllBytes("C:\\Users\\pablo\\Downloads\\save_new.csave"), DataFormat.Binary);
 
-            //Person save = SerializationUtility.DeserializeValue<Person>(bytes, DataFormat.Binary);
             Console.WriteLine(save.GetType().ToString());
             displayFields(save);
             foreach(NPCSave npc in save.npcSaves)
